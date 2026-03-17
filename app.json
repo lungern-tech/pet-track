@@ -2,6 +2,7 @@
   "expo": {
     "name": "pet-track",
     "slug": "pet-track",
+    "scheme": "pet-track",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +14,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.pet-track"
+      "bundleIdentifier": "com.anonymous.pet-track",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "PetTrack 需要使用蓝牙来搜索和连接您的宠物追踪设备",
+        "NSLocationWhenInUseUsageDescription": "蓝牙扫描需要定位权限以发现附近设备"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,10 +26,26 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "permissions": [
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN"
+      ],
+      "package": "com.anonymous.pettrack"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "react-native-ble-plx"
+    ]
   }
 }

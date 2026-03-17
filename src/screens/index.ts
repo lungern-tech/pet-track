@@ -15,3 +15,4 @@ export { DeviceMatchScreen } from './DeviceMatchScreen';
 export { DeviceMatchSuccessScreen } from './DeviceMatchSuccessScreen';
 export { ProfileScreen } from './ProfileScreen';
 export { AboutPrivacyScreen } from './AboutPrivacyScreen';
+export { BleSearchScreen } from './BleSearchScreen';

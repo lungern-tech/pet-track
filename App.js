@@ -23,6 +23,7 @@ import {
   DeviceMatchSuccessScreen,
   ProfileScreen,
   AboutPrivacyScreen,
+  BleSearchScreen,
 } from './src/screens';
 import { MainTabRoute, RootStackRoute } from './src/navigation/types';
 
@@ -136,6 +137,10 @@ export default function App() {
         <RootStack.Screen
           name={RootStackRoute.AboutPrivacy}
           component={AboutPrivacyScreen}
+        />
+        <RootStack.Screen
+          name={RootStackRoute.BleSearch}
+          component={BleSearchScreen}
         />
         <RootStack.Screen
           name={RootStackRoute.DeviceMatch}

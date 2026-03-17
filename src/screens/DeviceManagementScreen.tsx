@@ -56,7 +56,7 @@ export function DeviceManagementScreen() {
         >
           <Pressable
             style={styles.addButton}
-            onPress={() => navigation.navigate(RootStackRoute.DeviceMatch)}
+            onPress={() => navigation.navigate(RootStackRoute.BleSearch)}
           >
             <Feather name="plus" size={20} color={COLORS.primary} />
             <Text style={styles.addButtonText}>添加设备</Text>

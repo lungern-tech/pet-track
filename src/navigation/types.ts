@@ -13,6 +13,7 @@ export enum RootStackRoute {
   DeviceMatchSuccess = 'DeviceMatchSuccess',
   Profile = 'Profile',
   AboutPrivacy = 'AboutPrivacy',
+  BleSearch = 'BleSearch',
 }
 
 export type RootStackParamList = {
@@ -30,6 +31,7 @@ export type RootStackParamList = {
   [RootStackRoute.DeviceMatchSuccess]: undefined;
   [RootStackRoute.Profile]: undefined;
   [RootStackRoute.AboutPrivacy]: undefined;
+  [RootStackRoute.BleSearch]: undefined;
 };
 
 export enum MainTabRoute {
