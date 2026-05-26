@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  expo-gaode-map@2.2.30:
+    hash: mnlv3m4fmhydcazgbh45u3ux2y
+    path: patches/expo-gaode-map@2.2.30.patch
+
 importers:
 
   .:
@@ -28,7 +33,7 @@ importers:
         version: 55.0.2(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       expo-gaode-map:
         specifier: ^2.2.30
-        version: 2.2.30(expo@55.0.2)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+        version: 2.2.30(patch_hash=mnlv3m4fmhydcazgbh45u3ux2y)(expo@55.0.2)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       expo-image-picker:
         specifier: ~55.0.13
         version: 55.0.13(expo@55.0.2)
@@ -955,6 +960,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@xmldom/xmldom@0.8.11':
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
@@ -4509,7 +4515,7 @@ snapshots:
       react: 19.2.0
       react-native: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
 
-  expo-gaode-map@2.2.30(expo@55.0.2)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+  expo-gaode-map@2.2.30(patch_hash=mnlv3m4fmhydcazgbh45u3ux2y)(expo@55.0.2)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
       expo: 55.0.2(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       react: 19.2.0

@@ -1,0 +1,64 @@
+diff --git a/ios/ExpoGaodeMapView.swift b/ios/ExpoGaodeMapView.swift
+index 38e4fb929ffbb39dc4203a15ebb1a7dba57066fd..7661df2357c252939648382122580d1295308437 100644
+--- a/ios/ExpoGaodeMapView.swift
++++ b/ios/ExpoGaodeMapView.swift
+@@ -117,6 +117,9 @@ class ExpoGaodeMapView: ExpoView, MAMapViewDelegate, UIGestureRecognizerDelegate
+     
+     // 惯性动画相关属性
+     private var displayLink: CADisplayLink?
++    /// 拖动标注时持续派发 onMarkerDrag（iOS 默认仅在状态切换时回调一次）
++    private var dragTrackingDisplayLink: CADisplayLink?
++    private weak var dragTrackingMarkerView: MarkerView?
+     private var zoomVelocity: Double = 0
+     private let friction: Double = 0.92 // 摩擦系数，越接近 1 滑得越远
+     private let velocityThreshold: Double = 0.001 // 停止阈值
+@@ -1380,9 +1383,14 @@ extension ExpoGaodeMapView {
+                 switch newState {
+                 case .starting:
+                     markerView.onMarkerDragStart(event)
++                    startMarkerDragTracking(markerView: markerView, annotation: annotation)
+                 case .dragging:
+                     markerView.onMarkerDrag(event)
++                    if dragTrackingDisplayLink == nil {
++                        startMarkerDragTracking(markerView: markerView, annotation: annotation)
++                    }
+                 case .ending, .canceling:
++                    stopMarkerDragTracking()
+                     markerView.onMarkerDragEnd(event)
+                 default:
+                     break
+@@ -1392,6 +1400,34 @@ extension ExpoGaodeMapView {
+         }
+ 
+     }
++
++    private func startMarkerDragTracking(markerView: MarkerView, annotation: MAAnnotation) {
++        stopMarkerDragTracking()
++        dragTrackingMarkerView = markerView
++        let link = CADisplayLink(target: self, selector: #selector(handleMarkerDragTrackingTick(_:)))
++        link.add(to: .main, forMode: .common)
++        dragTrackingDisplayLink = link
++    }
++
++    private func stopMarkerDragTracking() {
++        dragTrackingDisplayLink?.invalidate()
++        dragTrackingDisplayLink = nil
++        dragTrackingMarkerView = nil
++    }
++
++    @objc private func handleMarkerDragTrackingTick(_ link: CADisplayLink) {
++        guard let markerView = dragTrackingMarkerView,
++              let annotation = markerView.annotation else {
++            stopMarkerDragTracking()
++            return
++        }
++
++        let coord = annotation.coordinate
++        markerView.onMarkerDrag([
++            "latitude": coord.latitude,
++            "longitude": coord.longitude,
++        ])
++    }
+ }
+ 
+ // MARK: - MAMultiPointOverlayRendererDelegate

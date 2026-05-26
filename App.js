@@ -29,6 +29,7 @@ import {
   TermsOfServiceScreen,
   PrivacyPolicyScreen,
   BleSearchScreen,
+  FenceCreateScreen,
 } from './src/screens';
 import { MainTabRoute, RootStackRoute } from './src/navigation/types';
 
@@ -174,6 +175,10 @@ function AuthGate() {
           <RootStack.Screen
             name={RootStackRoute.DeviceMatchSuccess}
             component={DeviceMatchSuccessScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.FenceCreate}
+            component={FenceCreateScreen}
           />
         </>
       ) : (

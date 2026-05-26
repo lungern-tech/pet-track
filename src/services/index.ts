@@ -44,3 +44,16 @@ export type { RegisterDevicePayload, DeviceRecord } from './devicesApi';
 
 export { createPet, fetchPets } from './petsApi';
 export type { CreatePetPayload, PetRecord } from './petsApi';
+
+export {
+  createGeofence,
+  fetchGeofences,
+  fetchGeofence,
+  updateGeofence,
+  deleteGeofence,
+  normalizeGeofence,
+} from './geofencesApi';
+export type {
+  CreateGeofencePayload,
+  UpdateGeofencePayload,
+} from './geofencesApi';

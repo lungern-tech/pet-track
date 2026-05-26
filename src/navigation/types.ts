@@ -19,6 +19,7 @@ export enum RootStackRoute {
   TermsOfService = 'TermsOfService',
   PrivacyPolicy = 'PrivacyPolicy',
   BleSearch = 'BleSearch',
+  FenceCreate = 'FenceCreate',
 }
 
 export type RootStackParamList = {
@@ -47,6 +48,7 @@ export type RootStackParamList = {
         autoStart?: boolean;
       }
     | undefined;
+  [RootStackRoute.FenceCreate]: undefined;
 };
 
 export enum MainTabRoute {

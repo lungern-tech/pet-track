@@ -19,3 +19,4 @@ export { AboutPrivacyScreen } from './AboutPrivacyScreen';
 export { TermsOfServiceScreen } from './TermsOfServiceScreen';
 export { PrivacyPolicyScreen } from './PrivacyPolicyScreen';
 export { BleSearchScreen } from './BleSearchScreen';
+export { FenceCreateScreen } from './FenceCreateScreen';

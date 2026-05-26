@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { DeviceRecord } from '../services/devicesApi';
 import type { PetRecord as ApiPetRecord } from '../services/petsApi';
+import type { FenceRecord } from '../types/fence';
 import { mmkvStorage } from '../storage/mmkv';
 
 export type UnitSystem = 'metric' | 'imperial';
@@ -33,6 +34,8 @@ export type SettingsState = {
   primaryPet: PetRecord | null;
   /** 宠物信息录入流程中的临时草稿 */
   petOnboardingDraft: PetOnboardingDraft | null;
+  /** GET /geofences 同步后的围栏列表 */
+  fences: FenceRecord[];
   hydrated: boolean;
 
   setNotificationsEnabled: (enabled: boolean) => void;
@@ -49,6 +52,9 @@ export type SettingsState = {
   upsertPetAndSelect: (pet: PetRecord) => void;
   setPetOnboardingDraft: (draft: PetOnboardingDraft | null) => void;
   setPrimaryPet: (pet: PetRecord | null) => void;
+  setFencesFromServer: (list: FenceRecord[]) => void;
+  upsertFence: (fence: FenceRecord) => void;
+  removeFence: (id: number) => void;
 };
 
 export const useSettingsStore = create<SettingsState>()(
@@ -62,6 +68,7 @@ export const useSettingsStore = create<SettingsState>()(
       pets: [],
       primaryPet: null,
       petOnboardingDraft: null,
+      fences: [],
       hydrated: false,
 
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
@@ -96,6 +103,15 @@ export const useSettingsStore = create<SettingsState>()(
         })),
       setPetOnboardingDraft: (draft) => set({ petOnboardingDraft: draft }),
       setPrimaryPet: (pet) => set({ primaryPet: pet }),
+      setFencesFromServer: (list) => set({ fences: list }),
+      upsertFence: (fence) =>
+        set((state) => ({
+          fences: [fence, ...state.fences.filter((f) => f.id !== fence.id)],
+        })),
+      removeFence: (id) =>
+        set((state) => ({
+          fences: state.fences.filter((f) => f.id !== id),
+        })),
     }),
     {
       name: 'settings',
@@ -109,6 +125,7 @@ export const useSettingsStore = create<SettingsState>()(
         pets: s.pets,
         primaryPet: s.primaryPet,
         petOnboardingDraft: s.petOnboardingDraft,
+        fences: s.fences,
       }),
       onRehydrateStorage: () => () => {
         useSettingsStore.setState({ hydrated: true });

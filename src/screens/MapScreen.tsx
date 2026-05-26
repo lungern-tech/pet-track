@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   InteractionManager,
   Platform,
   Pressable,
@@ -11,12 +12,24 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { CameraPosition } from 'expo-gaode-map';
-import { ExpoGaodeMapModule, MapView } from 'expo-gaode-map';
+import type { CameraPosition, LatLng, MapViewRef } from 'expo-gaode-map';
+import { ExpoGaodeMapModule, MapView, Marker } from 'expo-gaode-map';
 
 import type { RootStackParamList } from '../navigation/types';
+import { RootStackRoute } from '../navigation/types';
+import { ActiveGeofenceLayers } from '../components/ActiveGeofenceLayers';
+import { FenceListSheet } from '../components/FenceListSheet';
+import {
+  PET_MARKER_HEIGHT,
+  PET_MARKER_WIDTH,
+  PetMapMarkerBubble,
+} from '../components/PetMapMarkerBubble';
+import { fetchGeofences, updateGeofence } from '../services/geofencesApi';
+import { ApiError } from '../services/RequestManager';
+import type { FenceRecord } from '../types/fence';
+import { useAuthStore, useSettingsStore } from '../store';
 
 const COLORS = {
   background: '#F5F4F1',
@@ -33,11 +46,49 @@ const DEFAULT_CAMERA: CameraPosition = {
   zoom: 12,
 };
 
+const LOCATION_ZOOM = 16;
+
+/** 与首页 mock 位置一致：北京市朝阳区三里屯 */
+const DEMO_PET_LOCATION: LatLng = {
+  latitude: 39.9338,
+  longitude: 116.4544,
+};
+
+const LOCATION_TIMEOUT_MS = 12_000;
+
 type MapNav = NativeStackNavigationProp<RootStackParamList>;
+
+type LocateTarget = 'me' | 'pet';
 
 export function MapScreen() {
   const navigation = useNavigation<MapNav>();
   const isFocused = useIsFocused();
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const primaryPet = useSettingsStore((s) => s.primaryPet);
+  const deviceAvatarUrl = useSettingsStore((s) => s.deviceAvatarUrl);
+  const fences = useSettingsStore((s) => s.fences);
+  const upsertFence = useSettingsStore((s) => s.upsertFence);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!accessToken) return;
+      let canceled = false;
+      (async () => {
+        try {
+          const list = await fetchGeofences();
+          if (!canceled) {
+            useSettingsStore.getState().setFencesFromServer(list);
+          }
+        } catch {
+          // 网络/鉴权失败时保留本地缓存
+        }
+      })();
+      return () => {
+        canceled = true;
+      };
+    }, [accessToken]),
+  );
+  const mapRef = useRef<MapViewRef>(null);
   const { height: windowHeight } = useWindowDimensions();
   const [initialCamera, setInitialCamera] = useState<CameraPosition | null>(
     null,
@@ -47,6 +98,18 @@ export function MapScreen() {
   const [mapHostReady, setMapHostReady] = useState(false);
   const [mapHasSize, setMapHasSize] = useState(Platform.OS !== 'web');
   const [mapViewKey, setMapViewKey] = useState(0);
+  const [locatingTarget, setLocatingTarget] = useState<LocateTarget | null>(
+    null,
+  );
+  const [fenceSheetVisible, setFenceSheetVisible] = useState(false);
+  const [togglingFenceId, setTogglingFenceId] = useState<number | null>(null);
+  const petLocation = primaryPet?.linkedDeviceId ? DEMO_PET_LOCATION : null;
+  const petAvatarUri =
+    primaryPet?.avatarUrl?.trim() || deviceAvatarUrl?.trim() || '';
+  const petMarkerCacheKey = primaryPet
+    ? `pet-marker-${primaryPet.id}-${petAvatarUri ? 'img' : 'icon'}`
+    : undefined;
+  const linkedDeviceId = primaryPet?.linkedDeviceId ?? null;
 
   useEffect(() => {
     if (Platform.OS === 'web') return;
@@ -106,7 +169,6 @@ export function MapScreen() {
         finishWithDefaultCamera();
 
         if (granted && !cancelled) {
-          const LOCATION_TIMEOUT_MS = 12000;
           try {
             const loc = await Promise.race([
               ExpoGaodeMapModule.getCurrentLocation(),
@@ -151,6 +213,129 @@ export function MapScreen() {
       cancelled = true;
     };
   }, []);
+
+  const handleFencePress = () => {
+    setFenceSheetVisible(true);
+  };
+
+  const handleAddFence = () => {
+    setFenceSheetVisible(false);
+    navigation.navigate(RootStackRoute.FenceCreate);
+  };
+
+  const handleToggleFence = async (fence: FenceRecord) => {
+    if (togglingFenceId != null) return;
+
+    const nextEnabled = !fence.enabled;
+    setTogglingFenceId(fence.id);
+    upsertFence({ ...fence, enabled: nextEnabled });
+
+    try {
+      const updated = await updateGeofence(fence.id, { enabled: nextEnabled });
+      upsertFence(updated);
+    } catch (e) {
+      upsertFence(fence);
+      const message =
+        e instanceof ApiError
+          ? e.message
+          : e instanceof Error
+            ? e.message
+            : '切换失败，请稍后重试';
+      Alert.alert('操作失败', message);
+    } finally {
+      setTogglingFenceId(null);
+    }
+  };
+
+  const focusMapOn = async (target: LatLng, zoom = LOCATION_ZOOM) => {
+    const ref = mapRef.current;
+    if (!ref) {
+      Alert.alert('提示', '地图尚未就绪，请稍后再试');
+      return;
+    }
+    await ref.moveCamera({ target, zoom }, 300);
+  };
+
+  const getCurrentLocation = async (): Promise<LatLng> => {
+    let granted = locationGranted;
+    if (!granted) {
+      const afterAsk = await ExpoGaodeMapModule.requestLocationPermission();
+      granted = afterAsk.granted;
+      if (granted) {
+        setLocationGranted(true);
+      }
+    }
+    if (!granted) {
+      throw new Error('permission_denied');
+    }
+
+    const loc = await Promise.race([
+      ExpoGaodeMapModule.getCurrentLocation(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('location_timeout')), LOCATION_TIMEOUT_MS),
+      ),
+    ]);
+
+    if (
+      loc &&
+      typeof loc.latitude === 'number' &&
+      typeof loc.longitude === 'number'
+    ) {
+      return {
+        latitude: loc.latitude,
+        longitude: loc.longitude,
+      };
+    }
+
+    throw new Error('invalid_location');
+  };
+
+  const handleLocateMe = async () => {
+    if (locatingTarget) return;
+    setLocatingTarget('me');
+    try {
+      const target = await getCurrentLocation();
+      await focusMapOn(target);
+    } catch (e) {
+      const message =
+        e instanceof Error && e.message === 'permission_denied'
+          ? '请允许应用访问位置信息'
+          : '暂时无法获取您的位置，请稍后再试';
+      Alert.alert('定位失败', message);
+    } finally {
+      setLocatingTarget(null);
+    }
+  };
+
+  const handleLocatePet = async () => {
+    if (locatingTarget) return;
+
+    if (!primaryPet) {
+      Alert.alert('暂无宠物', '请先添加宠物并绑定项圈');
+      return;
+    }
+
+    if (!petLocation) {
+      Alert.alert('暂无位置', '宠物位置待项圈上报，请稍后再试');
+      return;
+    }
+
+    setLocatingTarget('pet');
+    try {
+      await focusMapOn(petLocation);
+    } catch {
+      Alert.alert('定位失败', '暂时无法移动到宠物位置，请稍后再试');
+    } finally {
+      setLocatingTarget(null);
+    }
+  };
+
+  const showMapControls =
+    isFocused &&
+    mapHostReady &&
+    mapHasSize &&
+    initialCamera &&
+    Platform.OS !== 'web';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -234,6 +419,7 @@ export function MapScreen() {
                 </View>
               ) : (
                 <MapView
+                  ref={mapRef}
                   key={mapViewKey}
                   style={StyleSheet.absoluteFill}
                   initialCameraPosition={initialCamera}
@@ -241,7 +427,27 @@ export function MapScreen() {
                   onLoad={() => {
                     // 地图就绪
                   }}
-                />
+                >
+                  <ActiveGeofenceLayers
+                    fences={fences}
+                    linkedDeviceId={linkedDeviceId}
+                  />
+                  {petLocation && primaryPet ? (
+                    <Marker
+                      position={petLocation}
+                      anchor={{ x: 0.5, y: 1 }}
+                      customViewWidth={PET_MARKER_WIDTH}
+                      customViewHeight={PET_MARKER_HEIGHT}
+                      cacheKey={petMarkerCacheKey}
+                      zIndex={10}
+                    >
+                      <PetMapMarkerBubble
+                        name={primaryPet.name}
+                        avatarUri={petAvatarUri}
+                      />
+                    </Marker>
+                  ) : null}
+                </MapView>
               )}
               {initError ? (
                 <View style={styles.errorChip}>
@@ -251,9 +457,43 @@ export function MapScreen() {
                   </Text>
                 </View>
               ) : null}
+              {showMapControls ? (
+                <View style={styles.mapFabColumn}>
+                  <MapFabButton
+                    icon="crosshair"
+                    label="我的位置"
+                    loading={locatingTarget === 'me'}
+                    onPress={handleLocateMe}
+                  />
+                  <MapFabButton
+                    icon="map-pin"
+                    label="宠物位置"
+                    loading={locatingTarget === 'pet'}
+                    onPress={handleLocatePet}
+                  />
+                  <Pressable
+                    style={styles.fenceFab}
+                    onPress={handleFencePress}
+                    accessibilityRole="button"
+                    accessibilityLabel="围栏操作"
+                  >
+                    <Feather name="shield" size={20} color={COLORS.surface} />
+                    <Text style={styles.fenceFabLabel}>围栏</Text>
+                  </Pressable>
+                </View>
+              ) : null}
             </>
           )}
         </View>
+
+        <FenceListSheet
+          visible={fenceSheetVisible}
+          fences={fences}
+          onClose={() => setFenceSheetVisible(false)}
+          onAdd={handleAddFence}
+          onToggleFence={(fence) => void handleToggleFence(fence)}
+          togglingFenceId={togglingFenceId}
+        />
       </View>
     </SafeAreaView>
   );
@@ -270,6 +510,31 @@ function QuickEntry({ icon, label, onPress }: QuickEntryProps) {
     <Pressable style={styles.entryButton} onPress={onPress}>
       <Feather name={icon} size={18} color={COLORS.primary} />
       <Text style={styles.entryLabel}>{label}</Text>
+    </Pressable>
+  );
+}
+
+type MapFabButtonProps = {
+  icon: React.ComponentProps<typeof Feather>['name'];
+  label: string;
+  loading?: boolean;
+  onPress: () => void;
+};
+
+function MapFabButton({ icon, label, loading, onPress }: MapFabButtonProps) {
+  return (
+    <Pressable
+      style={styles.mapFabButton}
+      onPress={onPress}
+      disabled={loading}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      {loading ? (
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      ) : (
+        <Feather name={icon} size={20} color={COLORS.primary} />
+      )}
     </Pressable>
   );
 }
@@ -383,5 +648,36 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 12,
     color: '#92400E',
+  },
+  mapFabColumn: {
+    position: 'absolute',
+    right: 16,
+    bottom: 24,
+    alignItems: 'flex-end',
+    gap: 10,
+  },
+  mapFabButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surface,
+    ...shadowCard,
+  },
+  fenceFab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 24,
+    backgroundColor: COLORS.primary,
+    ...shadowCard,
+  },
+  fenceFabLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.surface,
   },
 });
