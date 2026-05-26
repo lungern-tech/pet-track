@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,8 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 import type { RootStackParamList } from '../navigation/types';
 import { RootStackRoute } from '../navigation/types';
+import { useAuthStore } from '../store/authStore';
+import { useSettingsStore } from '../store/settingsStore';
 
 type SettingsScreenNav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -53,6 +57,28 @@ function SettingItem({ icon, label, onPress }: SettingItemProps) {
 
 export function SettingsScreen() {
   const navigation = useNavigation<SettingsScreenNav>();
+  const queryClient = useQueryClient();
+  const logout = useAuthStore((s) => s.logout);
+  const displayName = useAuthStore((s) => s.displayName);
+  const email = useAuthStore((s) => s.email);
+
+  const handleLogout = () => {
+    Alert.alert('退出登录', '确定要退出当前账号吗？', [
+      { text: '取消', style: 'cancel' },
+      {
+        text: '退出',
+        style: 'destructive',
+        onPress: () => {
+          logout();
+          queryClient.clear();
+          useSettingsStore.getState().setDevicesFromServer([]);
+          useSettingsStore.getState().setDeviceAvatarUrl(null);
+          useSettingsStore.getState().setPetOnboardingDraft(null);
+          useSettingsStore.getState().setPrimaryPet(null);
+        },
+      },
+    ]);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -73,8 +99,12 @@ export function SettingsScreen() {
                 <Feather name="user" size={26} color={COLORS.surface} />
               </View>
               <View style={styles.profileTextCol}>
-                <Text style={styles.profileName}>Max 的铲屎官</Text>
-                <Text style={styles.profileSubtitle}>user@example.com</Text>
+                <Text style={styles.profileName}>
+                  {displayName?.trim() ? displayName : '—'}
+                </Text>
+                <Text style={styles.profileSubtitle}>
+                  {email?.trim() ? email : '—'}
+                </Text>
               </View>
               <Feather name="chevron-right" size={20} color={COLORS.textMuted} />
             </Pressable>
@@ -160,7 +190,7 @@ export function SettingsScreen() {
             />
           </View>
 
-          <Pressable style={styles.logoutButton}>
+          <Pressable style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>退出登录  [→]</Text>
           </Pressable>
         </ScrollView>

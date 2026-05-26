@@ -16,6 +16,9 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 import { RootStackRoute } from '../navigation/types';
+import { useAuthStore } from '../store/authStore';
+import { ApiError } from '../services/RequestManager';
+import { loginUser } from '../services/authApi';
 
 const COLORS = {
   background: '#F5F4F1',
@@ -30,11 +33,124 @@ const COLORS = {
 
 type LoginNav = NativeStackNavigationProp<RootStackParamList>;
 
+type LoginErrors = Partial<{
+  email: string;
+  password: string;
+  submit: string;
+}>;
+
+type LoginTouched = Partial<Record<'email' | 'password', boolean>>;
+
+const ERROR_ORDER: (keyof LoginErrors)[] = ['email', 'password', 'submit'];
+
+function getFirstErrorKey(errors: LoginErrors): keyof LoginErrors | null {
+  for (const k of ERROR_ORDER) {
+    if (errors[k]) return k;
+  }
+  return null;
+}
+
+function validateField(
+  field: keyof LoginTouched,
+  input: { email: string; password: string },
+): string | undefined {
+  const trimmedEmail = input.email.trim();
+
+  switch (field) {
+    case 'email':
+      if (!trimmedEmail) return '请输入邮箱';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) return '邮箱格式不正确';
+      return undefined;
+    case 'password':
+      return input.password ? undefined : '请输入密码';
+  }
+}
+
+function validateLogin(input: { email: string; password: string }): LoginErrors {
+  const errors: LoginErrors = {};
+  const emailError = validateField('email', input);
+  const passwordError = validateField('password', input);
+  if (emailError) errors.email = emailError;
+  if (passwordError) errors.password = passwordError;
+  return errors;
+}
+
 export function LoginScreen() {
   const navigation = useNavigation<LoginNav>();
+  const setSession = useAuthStore((s) => s.setSession);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [touched, setTouched] = useState<LoginTouched>({});
+  const [errors, setErrors] = useState<LoginErrors>({});
+
+  const visibleErrors: LoginErrors = attemptedSubmit
+    ? errors
+    : {
+        email: touched.email ? errors.email : undefined,
+        password: touched.password ? errors.password : undefined,
+      };
+
+  const firstErrorKey = getFirstErrorKey(visibleErrors);
+
+  const clearFieldError = (field: keyof LoginTouched) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+      submit: undefined,
+    }));
+  };
+
+  const runFieldValidation = (field: keyof LoginTouched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const msg = validateField(field, { email, password });
+    setErrors((prev) => ({
+      ...prev,
+      [field]: msg,
+      submit: undefined,
+    }));
+  };
+
+  const handleLogin = async () => {
+    if (submitting) return;
+    setAttemptedSubmit(true);
+    setTouched({ email: true, password: true });
+
+    const v = validateLogin({ email, password });
+    setErrors(v);
+    if (Object.keys(v).length > 0) return;
+
+    const trimmedEmail = email.trim();
+    setSubmitting(true);
+    try {
+      const data = await loginUser({
+        email: trimmedEmail,
+        password,
+      });
+
+      const dn = data.user.displayName?.trim();
+      const em = data.user.email?.trim();
+      setSession({
+        accessToken: data.accessToken,
+        refreshToken: null,
+        userId: String(data.user.id),
+        displayName: dn ? dn : null,
+        email: em ? em : trimmedEmail || null,
+      });
+    } catch (e) {
+      const message =
+        e instanceof ApiError
+          ? e.message
+          : e instanceof Error
+            ? e.message
+            : '登录失败，请稍后再试';
+      setErrors({ submit: message });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -65,19 +181,32 @@ export function LoginScreen() {
             <View style={styles.field}>
               <Text style={styles.label}>邮箱</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  firstErrorKey === 'email' && styles.inputError,
+                ]}
                 placeholder="请输入邮箱"
                 placeholderTextColor={COLORS.textMuted}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                onFocus={() => clearFieldError('email')}
+                onBlur={() => runFieldValidation('email')}
               />
+              {firstErrorKey === 'email' && visibleErrors.email && (
+                <Text style={styles.fieldError}>{visibleErrors.email}</Text>
+              )}
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>密码</Text>
-              <View style={styles.passwordRow}>
+              <View
+                style={[
+                  styles.passwordRow,
+                  firstErrorKey === 'password' && styles.inputError,
+                ]}
+              >
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="请输入密码"
@@ -86,6 +215,8 @@ export function LoginScreen() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
+                  onFocus={() => clearFieldError('password')}
+                  onBlur={() => runFieldValidation('password')}
                 />
                 <Pressable
                   onPress={() => setShowPassword((v) => !v)}
@@ -98,6 +229,9 @@ export function LoginScreen() {
                   />
                 </Pressable>
               </View>
+              {firstErrorKey === 'password' && visibleErrors.password && (
+                <Text style={styles.fieldError}>{visibleErrors.password}</Text>
+              )}
             </View>
 
             <Pressable
@@ -107,9 +241,18 @@ export function LoginScreen() {
               <Text style={styles.forgotText}>忘记密码？</Text>
             </Pressable>
 
-            <Pressable style={styles.primaryButton}>
-              <Text style={styles.primaryButtonText}>登录</Text>
+            <Pressable
+              style={[styles.primaryButton, submitting && styles.primaryButtonDisabled]}
+              onPress={handleLogin}
+              disabled={submitting}
+            >
+              <Text style={styles.primaryButtonText}>
+                {submitting ? '登录中...' : '登录'}
+              </Text>
             </Pressable>
+            {firstErrorKey === 'submit' && errors.submit && (
+              <Text style={styles.submitError}>{errors.submit}</Text>
+            )}
           </View>
 
           <View style={styles.dividerRow}>
@@ -250,6 +393,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.text,
   },
+  inputError: {
+    borderColor: '#E05252',
+  },
   passwordRow: {
     height: 52,
     borderRadius: 12,
@@ -260,6 +406,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  fieldError: {
+    fontSize: 12,
+    color: '#E05252',
+    marginTop: 6,
+    fontWeight: '500',
   },
   passwordInput: {
     flex: 1,
@@ -282,10 +434,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  primaryButtonDisabled: {
+    opacity: 0.6,
+  },
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  submitError: {
+    marginTop: -8,
+    fontSize: 12,
+    color: '#E05252',
+    fontWeight: '500',
+    textAlign: 'center',
   },
   dividerRow: {
     flexDirection: 'row',

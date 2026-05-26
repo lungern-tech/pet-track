@@ -4,7 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { AppProviders } from './src/providers/AppProviders';
+import { useAuthStore } from './src/store/authStore';
 import {
   HomeScreen,
   LoginScreen,
@@ -19,10 +21,13 @@ import {
   DeviceManagementScreen,
   HelpFeedbackScreen,
   FeedbackFormScreen,
+  PetInfoEntryScreen,
   DeviceMatchScreen,
   DeviceMatchSuccessScreen,
   ProfileScreen,
   AboutPrivacyScreen,
+  TermsOfServiceScreen,
+  PrivacyPolicyScreen,
   BleSearchScreen,
 } from './src/screens';
 import { MainTabRoute, RootStackRoute } from './src/navigation/types';
@@ -38,6 +43,7 @@ const TAB_COLORS = {
 function MainTabs() {
   return (
     <Tab.Navigator
+      lazy
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
@@ -91,71 +97,132 @@ function MainTabs() {
   );
 }
 
+function AuthGate() {
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const accessToken = useAuthStore((s) => s.accessToken);
+
+  if (!hydrated) {
+    return (
+      <View style={styles.bootSplash}>
+        <ActivityIndicator size="large" color={TAB_COLORS.active} />
+      </View>
+    );
+  }
+
+  const isAuthed = !!accessToken;
+
+  return (
+    <RootStack.Navigator
+      key={isAuthed ? 'authed' : 'guest'}
+      screenOptions={{ headerShown: false }}
+      initialRouteName={isAuthed ? RootStackRoute.MainTabs : RootStackRoute.Login}
+    >
+      {isAuthed ? (
+        <>
+          <RootStack.Screen
+            name={RootStackRoute.MainTabs}
+            component={MainTabs}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.Notifications}
+            component={NotificationListScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.NotificationSettings}
+            component={NotificationSettingsScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.DeviceManagement}
+            component={DeviceManagementScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.HelpFeedback}
+            component={HelpFeedbackScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.FeedbackForm}
+            component={FeedbackFormScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.Profile}
+            component={ProfileScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.AboutPrivacy}
+            component={AboutPrivacyScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.PrivacyPolicy}
+            component={PrivacyPolicyScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.TermsOfService}
+            component={TermsOfServiceScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.BleSearch}
+            component={BleSearchScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.PetInfoEntry}
+            component={PetInfoEntryScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.DeviceMatch}
+            component={DeviceMatchScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.DeviceMatchSuccess}
+            component={DeviceMatchSuccessScreen}
+          />
+        </>
+      ) : (
+        <>
+          <RootStack.Screen name={RootStackRoute.Login} component={LoginScreen} />
+          <RootStack.Screen
+            name={RootStackRoute.PrivacyPolicy}
+            component={PrivacyPolicyScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.TermsOfService}
+            component={TermsOfServiceScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.Register}
+            component={RegisterScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.ForgotPassword}
+            component={ForgotPasswordScreen}
+          />
+          <RootStack.Screen
+            name={RootStackRoute.ResetPassword}
+            component={ResetPasswordScreen}
+          />
+        </>
+      )}
+    </RootStack.Navigator>
+  );
+}
+
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar style="auto" />
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name={RootStackRoute.MainTabs} component={MainTabs} />
-        <RootStack.Screen name={RootStackRoute.Login} component={LoginScreen} />
-        <RootStack.Screen
-          name={RootStackRoute.Register}
-          component={RegisterScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.ForgotPassword}
-          component={ForgotPasswordScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.ResetPassword}
-          component={ResetPasswordScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.Notifications}
-          component={NotificationListScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.NotificationSettings}
-          component={NotificationSettingsScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.DeviceManagement}
-          component={DeviceManagementScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.HelpFeedback}
-          component={HelpFeedbackScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.FeedbackForm}
-          component={FeedbackFormScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.Profile}
-          component={ProfileScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.AboutPrivacy}
-          component={AboutPrivacyScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.BleSearch}
-          component={BleSearchScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.DeviceMatch}
-          component={DeviceMatchScreen}
-        />
-        <RootStack.Screen
-          name={RootStackRoute.DeviceMatchSuccess}
-          component={DeviceMatchSuccessScreen}
-        />
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <AppProviders>
+      <NavigationContainer>
+        <StatusBar style="auto" />
+        <AuthGate />
+      </NavigationContainer>
+    </AppProviders>
   );
 }
 
 const styles = StyleSheet.create({
+  bootSplash: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
   tabBar: {
     backgroundColor: '#FFFFFF',
     borderTopWidth: 0,

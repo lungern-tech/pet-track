@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { RootStackRoute } from '../navigation/types';
 
 type AboutPrivacyNav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -105,9 +106,17 @@ export function AboutPrivacyScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>隐私与法律</Text>
             <View style={styles.card}>
-              <ActionRow icon="shield" label="隐私政策" />
+              <ActionRow
+                icon="shield"
+                label="隐私政策"
+                onPress={() => navigation.navigate(RootStackRoute.PrivacyPolicy)}
+              />
               <Divider />
-              <ActionRow icon="book-open" label="用户协议" />
+              <ActionRow
+                icon="book-open"
+                label="用户协议"
+                onPress={() => navigation.navigate(RootStackRoute.TermsOfService)}
+              />
               <Divider />
               <ActionRow icon="database" label="数据使用说明" />
             </View>

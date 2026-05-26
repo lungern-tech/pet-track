@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { useAuthStore } from '../store/authStore';
 
 type ProfileNav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -127,7 +128,12 @@ function Toggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
 
 export function ProfileScreen() {
   const navigation = useNavigation<ProfileNav>();
+  const displayName = useAuthStore((s) => s.displayName);
+  const email = useAuthStore((s) => s.email);
   const [twoFactor, setTwoFactor] = useState(false);
+
+  const nicknameLabel = displayName?.trim() ? displayName : '—';
+  const emailLabel = email?.trim() ? email : '—';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -162,9 +168,9 @@ export function ProfileScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>基本信息</Text>
             <View style={styles.card}>
-              <InfoRow label="昵称" value="Max 的铲屎官" />
+              <InfoRow label="昵称" value={nicknameLabel} />
               <Divider />
-              <InfoRow label="邮箱" value="user@example.com" />
+              <InfoRow label="邮箱" value={emailLabel} />
               <Divider />
               <InfoRow label="手机号" value="未绑定" valueColor={COLORS.warning} />
             </View>

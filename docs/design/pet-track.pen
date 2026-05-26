@@ -1,5 +1,5 @@
 {
-  "version": "2.8",
+  "version": "2.9",
   "children": [
     {
       "type": "frame",
@@ -89,6 +89,8 @@
           "gap": 20,
           "padding": [
             0,
+            24,
+            24,
             24
           ],
           "children": [
@@ -139,590 +141,154 @@
             },
             {
               "type": "frame",
-              "id": "3j0ic",
-              "name": "Pet Card",
+              "id": "iSWz5",
+              "name": "Empty State Wrapper",
               "width": "fill_container",
-              "fill": "#FFFFFF",
-              "cornerRadius": 16,
-              "effect": {
-                "type": "shadow",
-                "shadowType": "outer",
-                "color": "#1A191808",
-                "offset": {
-                  "x": 0,
-                  "y": 2
-                },
-                "blur": 12
-              },
+              "height": "fill_container",
               "layout": "vertical",
-              "gap": 16,
-              "padding": 20,
+              "gap": 20,
+              "justifyContent": "center",
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "WQypw",
-                  "name": "petHeader",
+                  "id": "CKJuE",
+                  "name": "emptyCardA",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1A191808",
+                    "offset": {
+                      "x": 0,
+                      "y": 2
+                    },
+                    "blur": 12
+                  },
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": 28,
+                  "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "PIHBF",
-                      "name": "petInfo",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "wCSC9",
-                          "name": "avatar",
-                          "width": 64,
-                          "height": 64,
-                          "fill": "#C8F0D8",
-                          "cornerRadius": 100,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon_font",
-                              "id": "aP0jg",
-                              "name": "petIcon",
-                              "width": 32,
-                              "height": 32,
-                              "iconFontName": "dog",
-                              "iconFontFamily": "lucide",
-                              "fill": "#3D8A5A"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "8qlLh",
-                          "name": "petNameCol",
-                          "layout": "vertical",
-                          "gap": 2,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "5c2JC",
-                              "name": "petName",
-                              "fill": "#1A1918",
-                              "content": "Max",
-                              "fontFamily": "Outfit",
-                              "fontSize": 22,
-                              "fontWeight": "600",
-                              "letterSpacing": -0.3
-                            },
-                            {
-                              "type": "text",
-                              "id": "sliqO",
-                              "name": "petBreed",
-                              "fill": "#6D6C6A",
-                              "content": "金毛寻回犬",
-                              "fontFamily": "Outfit",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "UNN4O",
-                      "name": "statusBadge",
+                      "id": "bP5R6",
+                      "name": "emptyIcon",
+                      "width": 88,
+                      "height": 88,
                       "fill": "#C8F0D8",
                       "cornerRadius": 100,
-                      "gap": 6,
-                      "padding": [
-                        6,
-                        12
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "aeEj4",
-                          "name": "statusDot",
-                          "width": 8,
-                          "height": 8,
-                          "fill": "#3D8A5A",
-                          "cornerRadius": 100
-                        },
-                        {
-                          "type": "text",
-                          "id": "119UX",
-                          "name": "statusText",
-                          "fill": "#3D8A5A",
-                          "content": "已连接",
-                          "fontFamily": "Outfit",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "aBVq8",
-                  "name": "lastLocationSummary",
-                  "fill": "#6D6C6A",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "最后定位：北京市朝阳区三里屯 · 2分钟前",
-                  "fontFamily": "Outfit",
-                  "fontSize": 12,
-                  "fontWeight": "500"
-                },
-                {
-                  "type": "frame",
-                  "id": "M7g6Y",
-                  "name": "statsRow",
-                  "width": "fill_container",
-                  "gap": 12,
-                  "justifyContent": "space_between",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "z9RPU",
-                      "name": "stat1",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "23ts9",
-                          "name": "stat1Value",
-                          "fill": "#1A1918",
-                          "content": "2.4",
-                          "fontFamily": "Outfit",
-                          "fontSize": 18,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.2
-                        },
-                        {
-                          "type": "text",
-                          "id": "LM8fW",
-                          "name": "stat1Label",
-                          "fill": "#6D6C6A",
-                          "content": "公里",
-                          "fontFamily": "Outfit",
-                          "fontSize": 11,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "EFXlA",
-                      "name": "stat2",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "9d3Se",
-                          "name": "stat2Value",
-                          "fill": "#1A1918",
-                          "content": "45",
-                          "fontFamily": "Outfit",
-                          "fontSize": 18,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.2
-                        },
-                        {
-                          "type": "text",
-                          "id": "e4yla",
-                          "name": "stat2Label",
-                          "fill": "#6D6C6A",
-                          "content": "分钟",
-                          "fontFamily": "Outfit",
-                          "fontSize": 11,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "FA7jX",
-                      "name": "stat3",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SyMh2",
-                          "name": "stat3Value",
-                          "fill": "#1A1918",
-                          "content": "98%",
-                          "fontFamily": "Outfit",
-                          "fontSize": 18,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.2
-                        },
-                        {
-                          "type": "text",
-                          "id": "oGZgk",
-                          "name": "stat3Label",
-                          "fill": "#6D6C6A",
-                          "content": "电量",
-                          "fontFamily": "Outfit",
-                          "fontSize": 11,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "C81px",
-                  "name": "Quick Actions",
-                  "width": "fill_container",
-                  "height": 44,
-                  "gap": 12,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "b2AEt",
-                      "name": "actionSeek",
-                      "width": "fill_container",
-                      "height": 44,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "gap": 8,
-                      "padding": [
-                        0,
-                        12
-                      ],
                       "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "icon_font",
-                          "id": "lvv0W",
-                          "name": "seekIcon",
-                          "width": 18,
-                          "height": 18,
-                          "iconFontName": "search",
-                          "iconFontFamily": "lucide",
-                          "fill": "#1A1918"
-                        },
-                        {
-                          "type": "text",
-                          "id": "aixgs",
-                          "name": "seekText",
-                          "fill": "#1A1918",
-                          "content": "寻宠",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "Hj1iY",
-                      "name": "actionFence",
-                      "width": "fill_container",
-                      "height": 44,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "gap": 8,
-                      "padding": [
-                        0,
-                        12
-                      ],
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "RaK9w",
-                          "name": "fenceIcon",
-                          "width": 18,
-                          "height": 18,
-                          "iconFontName": "shield",
-                          "iconFontFamily": "lucide",
-                          "fill": "#1A1918"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kk86H",
-                          "name": "fenceText",
-                          "fill": "#1A1918",
-                          "content": "围栏",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "8Nz54",
-                      "name": "actionDevice",
-                      "width": "fill_container",
-                      "height": 44,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "gap": 8,
-                      "padding": [
-                        0,
-                        12
-                      ],
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "yMz6C",
-                          "name": "deviceIcon",
-                          "width": 18,
-                          "height": 18,
-                          "iconFontName": "cpu",
-                          "iconFontFamily": "lucide",
-                          "fill": "#1A1918"
-                        },
-                        {
-                          "type": "text",
-                          "id": "5eWHL",
-                          "name": "deviceText",
-                          "fill": "#1A1918",
-                          "content": "设备",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "hoAJv",
-              "name": "Location Card",
-              "width": "fill_container",
-              "fill": "#FFFFFF",
-              "cornerRadius": 16,
-              "effect": {
-                "type": "shadow",
-                "shadowType": "outer",
-                "color": "#1A191808",
-                "offset": {
-                  "x": 0,
-                  "y": 2
-                },
-                "blur": 12
-              },
-              "layout": "vertical",
-              "gap": 12,
-              "padding": 18,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "MRn7s",
-                  "name": "locHeader",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "leppk",
-                      "name": "locTitle",
-                      "fill": "#1A1918",
-                      "content": "当前位置",
-                      "fontFamily": "Outfit",
-                      "fontSize": 18,
-                      "fontWeight": "600",
-                      "letterSpacing": -0.2
-                    },
-                    {
-                      "type": "icon_font",
-                      "id": "A50hW",
-                      "name": "locIcon",
-                      "width": 20,
-                      "height": 20,
-                      "iconFontName": "map-pin",
-                      "iconFontFamily": "lucide",
-                      "fill": "#3D8A5A"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "YWhJd",
-                  "name": "locAddress",
-                  "fill": "#6D6C6A",
-                  "content": "北京市朝阳区三里屯",
-                  "fontFamily": "Outfit",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "JyI3G",
-                  "name": "locTime",
-                  "fill": "#9C9B99",
-                  "content": "2分钟前更新",
-                  "fontFamily": "Outfit",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "VC3Br",
-              "name": "Activity Section",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 12,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "uPnkp",
-                  "name": "activityHeader",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "0jVvY",
-                      "name": "activityTitle",
-                      "fill": "#1A1918",
-                      "content": "今日活动",
-                      "fontFamily": "Outfit",
-                      "fontSize": 18,
-                      "fontWeight": "600",
-                      "letterSpacing": -0.2
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "WItaf",
-                  "name": "activityCards",
-                  "width": "fill_container",
-                  "gap": 12,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "jphbs",
-                      "name": "activityCard1",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 16,
-                      "effect": {
-                        "type": "shadow",
-                        "shadowType": "outer",
-                        "color": "#1A191808",
-                        "offset": {
-                          "x": 0,
-                          "y": 2
-                        },
-                        "blur": 12
-                      },
-                      "layout": "vertical",
-                      "gap": 8,
-                      "padding": 18,
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "vnCHD",
-                          "name": "act1Icon",
-                          "width": 24,
-                          "height": 24,
-                          "iconFontName": "activity",
+                          "id": "pH4QU",
+                          "name": "emptyIconSymbol",
+                          "width": 40,
+                          "height": 40,
+                          "iconFontName": "scan-line",
                           "iconFontFamily": "lucide",
                           "fill": "#3D8A5A"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "EytVA",
+                      "name": "emptyTitle",
+                      "fill": "#1A1918",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "还没有宠物",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "ANepm",
+                      "name": "emptyDesc",
+                      "fill": "#6D6C6A",
+                      "textGrowth": "fixed-width",
+                      "width": 280,
+                      "content": "先添加宠物信息，然后继续设备匹配完成绑定。",
+                      "lineHeight": 1.35,
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a1PWf",
+                      "name": "tip",
+                      "width": "fill_container",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "LDiSi",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "info",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9C9B99"
                         },
                         {
                           "type": "text",
-                          "id": "C30JT",
-                          "name": "act1Value",
-                          "fill": "#1A1918",
-                          "content": "8,240",
+                          "id": "dw3Mg",
+                          "fill": "#9C9B99",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "请将项圈靠近手机，在「设备匹配」中完成绑定。",
                           "fontFamily": "Outfit",
-                          "fontSize": 32,
-                          "fontWeight": "700",
-                          "letterSpacing": -1
-                        },
-                        {
-                          "type": "text",
-                          "id": "2N8Gk",
-                          "name": "act1Label",
-                          "fill": "#6D6C6A",
-                          "content": "步数",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
+                          "fontSize": 12,
                           "fontWeight": "500"
                         }
                       ]
                     },
                     {
                       "type": "frame",
-                      "id": "7IZBl",
-                      "name": "activityCard2",
+                      "id": "bFS6r",
+                      "name": "Add Device Button",
                       "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 16,
-                      "effect": {
-                        "type": "shadow",
-                        "shadowType": "outer",
-                        "color": "#1A191808",
-                        "offset": {
-                          "x": 0,
-                          "y": 2
-                        },
-                        "blur": 12
-                      },
-                      "layout": "vertical",
+                      "height": 52,
+                      "fill": "#3D8A5A",
+                      "cornerRadius": 12,
                       "gap": 8,
-                      "padding": 18,
+                      "padding": [
+                        0,
+                        24
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
                       "children": [
                         {
                           "type": "icon_font",
-                          "id": "OcCbN",
-                          "name": "act2Icon",
-                          "width": 24,
-                          "height": 24,
-                          "iconFontName": "clock-3",
+                          "id": "FL32M",
+                          "name": "addDeviceIcon",
+                          "width": 20,
+                          "height": 20,
+                          "iconFontName": "paw-print",
                           "iconFontFamily": "lucide",
-                          "fill": "#D89575"
+                          "fill": "#FFFFFF"
                         },
                         {
                           "type": "text",
-                          "id": "urczN",
-                          "name": "act2Value",
-                          "fill": "#1A1918",
-                          "content": "2.4",
+                          "id": "Nglx8",
+                          "name": "addDeviceText",
+                          "fill": "#FFFFFF",
+                          "content": "添加宠物",
                           "fontFamily": "Outfit",
-                          "fontSize": 32,
-                          "fontWeight": "700",
-                          "letterSpacing": -1
-                        },
-                        {
-                          "type": "text",
-                          "id": "ucSGI",
-                          "name": "act2Label",
-                          "fill": "#6D6C6A",
-                          "content": "小时",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "500"
+                          "fontSize": 16,
+                          "fontWeight": "600"
                         }
                       ]
                     }
@@ -3079,7 +2645,7 @@
       "id": "7vZtU",
       "x": 0,
       "y": 1000,
-      "name": "01-首页-空状态",
+      "name": "01-首页-已绑定后",
       "clip": true,
       "width": 402,
       "height": 874,
@@ -3162,6 +2728,8 @@
           "gap": 20,
           "padding": [
             0,
+            24,
+            24,
             24
           ],
           "children": [
@@ -3178,7 +2746,7 @@
                   "id": "C0zPP",
                   "name": "emptyGreeting",
                   "fill": "#1A1918",
-                  "content": "我的设备",
+                  "content": "你好，Max",
                   "fontFamily": "Outfit",
                   "fontSize": 26,
                   "fontWeight": "600",
@@ -3225,7 +2793,7 @@
                   "id": "maffT",
                   "name": "Empty State",
                   "width": "fill_container",
-                  "fill": "#FAFAF8",
+                  "fill": "#FFFFFF",
                   "cornerRadius": 16,
                   "effect": {
                     "type": "shadow",
@@ -3238,8 +2806,8 @@
                     "blur": 12
                   },
                   "layout": "vertical",
-                  "gap": 16,
-                  "padding": 32,
+                  "gap": 20,
+                  "padding": 28,
                   "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
@@ -3247,9 +2815,9 @@
                       "type": "frame",
                       "id": "3nvUg",
                       "name": "emptyIcon",
-                      "width": 80,
-                      "height": 80,
-                      "fill": "#EDECEA",
+                      "width": 88,
+                      "height": 88,
+                      "fill": "#C8F0D8",
                       "cornerRadius": 100,
                       "justifyContent": "center",
                       "alignItems": "center",
@@ -3260,9 +2828,9 @@
                           "name": "emptyIconSymbol",
                           "width": 40,
                           "height": 40,
-                          "iconFontName": "bluetooth",
+                          "iconFontName": "scan-line",
                           "iconFontFamily": "lucide",
-                          "fill": "#9C9B99"
+                          "fill": "#3D8A5A"
                         }
                       ]
                     },
@@ -3271,7 +2839,10 @@
                       "id": "X4aMf",
                       "name": "emptyTitle",
                       "fill": "#1A1918",
-                      "content": "还没有添加设备",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "还没有绑定设备",
+                      "textAlign": "center",
                       "fontFamily": "Outfit",
                       "fontSize": 18,
                       "fontWeight": "600",
@@ -3284,7 +2855,8 @@
                       "fill": "#6D6C6A",
                       "textGrowth": "fixed-width",
                       "width": 280,
-                      "content": "添加您的第一个宠物项圈设备，开始追踪您的宠物",
+                      "content": "添加宠物定位项圈后，即可在地图查看位置、活动与健康数据。",
+                      "lineHeight": 1.35,
                       "textAlign": "center",
                       "fontFamily": "Outfit",
                       "fontSize": 14,
@@ -3292,8 +2864,38 @@
                     },
                     {
                       "type": "frame",
+                      "id": "gik0D",
+                      "name": "tip",
+                      "width": "fill_container",
+                      "gap": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "XdBUd",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "info",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9C9B99"
+                        },
+                        {
+                          "type": "text",
+                          "id": "C0j55",
+                          "fill": "#9C9B99",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "先添加宠物信息，再进行设备匹配完成绑定。",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
                       "id": "oc8xl",
-                      "name": "Add Device Button",
+                      "name": "Add Pet Button",
                       "width": "fill_container",
                       "height": 52,
                       "fill": "#3D8A5A",
@@ -3321,7 +2923,7 @@
                           "id": "wgavT",
                           "name": "addDeviceText",
                           "fill": "#FFFFFF",
-                          "content": "添加设备",
+                          "content": "添加宠物",
                           "fontFamily": "Outfit",
                           "fontSize": 16,
                           "fontWeight": "600"
@@ -3467,7 +3069,7 @@
                   "name": "emptyTab4Icon",
                   "width": 22,
                   "height": 22,
-                  "iconFontName": "settings",
+                  "iconFontName": "user",
                   "iconFontFamily": "lucide",
                   "fill": "#A8A7A5"
                 },
@@ -3476,7 +3078,7 @@
                   "id": "eAPty",
                   "name": "emptyTab4Label",
                   "fill": "#A8A7A5",
-                  "content": "设置",
+                  "content": "我的",
                   "fontFamily": "Outfit",
                   "fontSize": 10,
                   "fontWeight": "500"
@@ -3492,7 +3094,7 @@
       "id": "racA5",
       "x": 450,
       "y": 1000,
-      "name": "05-设备匹配",
+      "name": "03-设备匹配",
       "clip": true,
       "width": 402,
       "height": 874,
@@ -3651,7 +3253,7 @@
                   "id": "4IEpi",
                   "name": "matchTitleText",
                   "fill": "#1A1918",
-                  "content": "正在搜索设备",
+                  "content": "开始匹配设备",
                   "fontFamily": "Outfit",
                   "fontSize": 22,
                   "fontWeight": "600",
@@ -3662,7 +3264,7 @@
                   "id": "s9kxB",
                   "name": "matchDesc",
                   "fill": "#6D6C6A",
-                  "content": "请确保：",
+                  "content": "填写宠物信息后，正在为你匹配设备",
                   "fontFamily": "Outfit",
                   "fontSize": 16,
                   "fontWeight": "600"
@@ -3853,10 +3455,10 @@
                 {
                   "type": "frame",
                   "id": "B5W0f",
-                  "name": "Cancel Button",
+                  "name": "Matching State Button",
                   "width": "fill_container",
                   "height": 52,
-                  "fill": "#EDECEA",
+                  "fill": "#E8E7E5",
                   "cornerRadius": 12,
                   "gap": 8,
                   "justifyContent": "center",
@@ -3867,7 +3469,7 @@
                       "id": "Coyu6",
                       "name": "cancelBtnText",
                       "fill": "#6D6C6A",
-                      "content": "取消",
+                      "content": "匹配中...",
                       "fontFamily": "Outfit",
                       "fontSize": 16,
                       "fontWeight": "600"
@@ -3885,7 +3487,7 @@
       "id": "t17Ik",
       "x": 900,
       "y": 1000,
-      "name": "06-匹配成功",
+      "name": "04-匹配成功",
       "clip": true,
       "width": 402,
       "height": 874,
@@ -3965,7 +3567,7 @@
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 24,
+          "gap": 20,
           "padding": [
             0,
             24
@@ -4009,125 +3611,6 @@
             },
             {
               "type": "frame",
-              "id": "0ArWn",
-              "name": "Device Info Card",
-              "width": "fill_container",
-              "fill": "#FFFFFF",
-              "cornerRadius": 16,
-              "effect": {
-                "type": "shadow",
-                "shadowType": "outer",
-                "color": "#1A191808",
-                "offset": {
-                  "x": 0,
-                  "y": 2
-                },
-                "blur": 12
-              },
-              "layout": "vertical",
-              "gap": 24,
-              "padding": 24,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "DdkOx",
-                  "name": "Avatar Section",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 12,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "VPYSI",
-                      "name": "avatarLabel",
-                      "fill": "#6D6C6A",
-                      "content": "设备头像",
-                      "fontFamily": "Outfit",
-                      "fontSize": 14,
-                      "fontWeight": "500"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "XZPa6",
-                      "name": "avatarContainer",
-                      "width": 100,
-                      "height": 100,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 100,
-                      "stroke": {
-                        "thickness": 2,
-                        "fill": "#D1D0CD"
-                      },
-                      "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "Dw9Xo",
-                          "name": "avatarIcon",
-                          "width": 32,
-                          "height": 32,
-                          "iconFontName": "image-plus",
-                          "iconFontFamily": "lucide",
-                          "fill": "#3D8A5A"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "96d3U",
-                  "name": "Name Section",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "KCs7e",
-                      "name": "nameLabel",
-                      "fill": "#6D6C6A",
-                      "content": "设备名称",
-                      "fontFamily": "Outfit",
-                      "fontSize": 14,
-                      "fontWeight": "500"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "b88xv",
-                      "name": "nameInput",
-                      "width": "fill_container",
-                      "height": 52,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "padding": [
-                        0,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "hGF9V",
-                          "name": "nameInputText",
-                          "fill": "#9C9B99",
-                          "content": "请输入设备名称",
-                          "fontFamily": "Outfit",
-                          "fontSize": 15,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "QmNIv",
               "name": "Confirm Button",
               "width": "fill_container",
@@ -4147,7 +3630,7 @@
                   "id": "c4EC0",
                   "name": "confirmText",
                   "fill": "#FFFFFF",
-                  "content": "完成",
+                  "content": "完成，返回首页",
                   "fontFamily": "Outfit",
                   "fontSize": 16,
                   "fontWeight": "600"
@@ -5605,7 +5088,7 @@
       "type": "frame",
       "id": "xeASl",
       "x": 1350,
-      "y": 2011,
+      "y": 2162,
       "name": "10-重置密码",
       "clip": true,
       "width": 402,
@@ -13372,7 +12855,7 @@
     {
       "type": "frame",
       "id": "BuUf3",
-      "x": 1752,
+      "x": 1808,
       "y": 1000,
       "name": "25-我的",
       "clip": true,
@@ -14299,11 +13782,9 @@
       "type": "frame",
       "id": "KCruz",
       "x": -1348,
-      "y": 1000,
-      "name": "26-添加宠物",
-      "clip": true,
+      "y": 937,
+      "name": "02-宠物信息录入",
       "width": 402,
-      "height": 874,
       "fill": "#F5F4F1",
       "layout": "vertical",
       "children": [
@@ -14419,8 +13900,8 @@
           "type": "frame",
           "id": "Y2IRq",
           "name": "Content",
-          "width": "fill_container",
-          "height": "fill_container",
+          "width": 402,
+          "height": 873,
           "layout": "vertical",
           "gap": 16,
           "padding": [
@@ -14530,6 +14011,67 @@
                           "fontFamily": "Outfit",
                           "fontSize": 14,
                           "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "iOJOs",
+                  "name": "Pet Type",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "CCD1p",
+                      "name": "petTypeLabel",
+                      "fill": "#1A1918",
+                      "content": "宠物类型",
+                      "fontFamily": "Outfit",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bALwk",
+                      "name": "petTypeInput",
+                      "width": "fill_container",
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#E5E4E1"
+                      },
+                      "padding": [
+                        0,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "H6srg",
+                          "name": "petTypeHint",
+                          "fill": "#9C9B99",
+                          "content": "选择类型",
+                          "fontFamily": "Outfit",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "KTOCX",
+                          "name": "petTypeChevron",
+                          "width": 18,
+                          "height": 18,
+                          "iconFontName": "chevron-down",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9C9B99"
                         }
                       ]
                     }
@@ -14819,81 +14361,6 @@
             },
             {
               "type": "frame",
-              "id": "oiMpG",
-              "name": "Device",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "APJtx",
-                  "fill": "#1A1918",
-                  "content": "绑定设备",
-                  "fontFamily": "Outfit",
-                  "fontSize": 15,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "R8npz",
-                  "width": "fill_container",
-                  "height": 52,
-                  "fill": "#F5F4F1",
-                  "cornerRadius": 12,
-                  "stroke": {
-                    "thickness": 1,
-                    "fill": "#E5E4E1"
-                  },
-                  "padding": [
-                    0,
-                    16
-                  ],
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "DX1ML",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "AnDtR",
-                          "fill": "#1A1918",
-                          "content": "小白的项圈",
-                          "fontFamily": "Outfit",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ydVQ2",
-                          "fill": "#9C9B99",
-                          "content": "可选择已有设备或稍后绑定",
-                          "fontFamily": "Outfit",
-                          "fontSize": 11,
-                          "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "icon_font",
-                      "id": "4wtHY",
-                      "width": 18,
-                      "height": 18,
-                      "iconFontName": "chevron-right",
-                      "iconFontFamily": "lucide",
-                      "fill": "#9C9B99"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "OUBjK",
               "width": "fill_container",
               "layout": "vertical",
@@ -14952,7 +14419,7 @@
                   "type": "text",
                   "id": "3Ej3x",
                   "fill": "#FFFFFF",
-                  "content": "保存并创建",
+                  "content": "下一步：设备匹配",
                   "fontFamily": "Outfit",
                   "fontSize": 16,
                   "fontWeight": "700"
@@ -16895,7 +16362,8 @@
                   "fill": "#8C8985",
                   "content": "版本 1.0.0 (Build 2024.03)",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -16904,7 +16372,8 @@
                   "fill": "#8C8985",
                   "content": "智能宠物追踪与健康管理",
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -17626,7 +17095,8 @@
                               "fill": "#9C9B99",
                               "content": "23.5 MB",
                               "fontFamily": "Inter",
-                              "fontSize": 13
+                              "fontSize": 13,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "icon_font",
@@ -17668,7 +17138,8 @@
                   "fill": "#C4C2BF",
                   "content": "© 2024 PetTrack. All rights reserved.",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "text",
@@ -17677,9 +17148,488 @@
                   "fill": "#C4C2BF",
                   "content": "为宠物爱好者用心打造 ❤️",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "GYSjc",
+      "x": 5470,
+      "y": -1262,
+      "name": "30-用户协议",
+      "clip": true,
+      "width": 402,
+      "height": 1100,
+      "fill": "#F5F4F1",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "0OFkU",
+          "name": "statusBar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            21,
+            24,
+            19,
+            24
+          ],
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "text",
+              "id": "cos3f",
+              "name": "timeText",
+              "fill": "#000000",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "we4wX",
+              "name": "levels",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "Ed0Dn",
+                  "name": "cellular",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "signal",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "MtIAU",
+                  "name": "wifi",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "wifi",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "6ZxHH",
+                  "name": "battery",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "battery",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vht4X",
+          "name": "header",
+          "width": "fill_container",
+          "height": 56,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "j9g50",
+              "name": "headerLeft",
+              "width": 24,
+              "height": 24,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "FRLJo",
+                  "name": "backIcon",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "chevron-left",
+                  "iconFontFamily": "lucide",
+                  "fill": "#1A1918"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oFsqb",
+              "name": "headerCenter",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QdSq6",
+                  "name": "titleText",
+                  "fill": "#1A1918",
+                  "content": "用户协议",
+                  "fontFamily": "Outfit",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oqRnU",
+              "name": "headerSpacer",
+              "width": 24,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AQeKS",
+          "name": "scrollContent",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            20,
+            16,
+            40,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "6dKQU",
+              "name": "updateDate",
+              "fill": "#9C9B99",
+              "content": "更新日期：2026-03-17",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "rvEWf",
+              "name": "s1Title",
+              "fill": "#1A1918",
+              "content": "一、协议概述",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "PScFl",
+              "name": "s1Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "欢迎使用 PetTrack。使用本应用即表示你同意本协议条款。请在注册或使用前仔细阅读，如不同意请停止使用。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "RhcC0",
+              "name": "s2Title",
+              "fill": "#1A1918",
+              "content": "二、账户与安全",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "CDYr9",
+              "name": "s2Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "你应妥善保管账号信息并对账号下的活动负责。若发现未经授权的使用，请及时通过应用内渠道联系我们。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "imIoo",
+              "name": "s3Title",
+              "fill": "#1A1918",
+              "content": "三、服务与免责声明",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Pk3sA",
+              "name": "s3Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "定位与健康数据可能受设备、电量、网络与环境影响，仅供参考。我们会持续改进服务，但不对因不可抗力或第三方原因导致的中断承担责任。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "OqNDj",
+      "x": 5470,
+      "y": -12,
+      "name": "31-隐私政策",
+      "clip": true,
+      "width": 402,
+      "height": 1100,
+      "fill": "#F5F4F1",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "tuyeC",
+          "name": "statusBar",
+          "width": "fill_container",
+          "height": 62,
+          "padding": [
+            21,
+            24,
+            19,
+            24
+          ],
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "text",
+              "id": "SIuXz",
+              "name": "timeText",
+              "fill": "#000000",
+              "content": "9:41",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "gzZ6D",
+              "name": "levels",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "yMPve",
+                  "name": "cellular",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "signal",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "qVjGD",
+                  "name": "wifi",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "wifi",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "WCz27",
+                  "name": "battery",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "battery",
+                  "iconFontFamily": "lucide",
+                  "fill": "#000000"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NEcz2",
+          "name": "header",
+          "width": "fill_container",
+          "height": 56,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "9fz4k",
+              "name": "headerLeft",
+              "width": 24,
+              "height": 24,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "Wd1p8",
+                  "name": "backIcon",
+                  "width": 24,
+                  "height": 24,
+                  "iconFontName": "chevron-left",
+                  "iconFontFamily": "lucide",
+                  "fill": "#1A1918"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iS10h",
+              "name": "headerCenter",
+              "width": "fill_container",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OlQH6",
+                  "name": "titleText",
+                  "fill": "#1A1918",
+                  "content": "隐私政策",
+                  "fontFamily": "Outfit",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fJIuB",
+              "name": "headerSpacer",
+              "width": 24,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "30amb",
+          "name": "scrollContent",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            20,
+            16,
+            40,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Qhu3Y",
+              "name": "updateDate",
+              "fill": "#9C9B99",
+              "content": "更新日期：2026-03-17",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "4Y4or",
+              "name": "s1Title",
+              "fill": "#1A1918",
+              "content": "一、我们收集的信息",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "t74hG",
+              "name": "s1Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "为提供设备连接、定位与健康功能，我们可能收集账号信息、设备标识、蓝牙连接信息、定位数据与使用日志。具体以你授权为准。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "yotlb",
+              "name": "s2Title",
+              "fill": "#1A1918",
+              "content": "二、信息的使用与共享",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "etPrA",
+              "name": "s2Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "我们仅为实现产品功能、改进体验与保障安全而使用信息。除非法律法规要求或获得你的明确授权，我们不会向无关第三方出售或共享你的个人信息。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "VoY4j",
+              "name": "s3Title",
+              "fill": "#1A1918",
+              "content": "三、你的权利",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "tl1fy",
+              "name": "s3Body",
+              "fill": "#6D6C6A",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "你可以在应用内访问、更正或删除部分信息，并管理权限授权。若你希望注销账号或获取更多帮助，请通过“帮助与反馈”联系我们。",
+              "lineHeight": 1.5,
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
             }
           ]
         }

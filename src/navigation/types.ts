@@ -1,3 +1,5 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+
 export enum RootStackRoute {
   MainTabs = 'MainTabs',
   Login = 'Login',
@@ -9,15 +11,18 @@ export enum RootStackRoute {
   DeviceManagement = 'DeviceManagement',
   HelpFeedback = 'HelpFeedback',
   FeedbackForm = 'FeedbackForm',
+  PetInfoEntry = 'PetInfoEntry',
   DeviceMatch = 'DeviceMatch',
   DeviceMatchSuccess = 'DeviceMatchSuccess',
   Profile = 'Profile',
   AboutPrivacy = 'AboutPrivacy',
+  TermsOfService = 'TermsOfService',
+  PrivacyPolicy = 'PrivacyPolicy',
   BleSearch = 'BleSearch',
 }
 
 export type RootStackParamList = {
-  [RootStackRoute.MainTabs]: undefined;
+  [RootStackRoute.MainTabs]: NavigatorScreenParams<MainTabParamList> | undefined;
   [RootStackRoute.Login]: undefined;
   [RootStackRoute.Register]: undefined;
   [RootStackRoute.ForgotPassword]: undefined;
@@ -27,11 +32,21 @@ export type RootStackParamList = {
   [RootStackRoute.DeviceManagement]: undefined;
   [RootStackRoute.HelpFeedback]: undefined;
   [RootStackRoute.FeedbackForm]: undefined;
+  [RootStackRoute.PetInfoEntry]: undefined;
   [RootStackRoute.DeviceMatch]: undefined;
-  [RootStackRoute.DeviceMatchSuccess]: undefined;
+  [RootStackRoute.DeviceMatchSuccess]: {
+    deviceId?: string;
+    petName?: string;
+  } | undefined;
   [RootStackRoute.Profile]: undefined;
   [RootStackRoute.AboutPrivacy]: undefined;
-  [RootStackRoute.BleSearch]: undefined;
+  [RootStackRoute.TermsOfService]: undefined;
+  [RootStackRoute.PrivacyPolicy]: undefined;
+  [RootStackRoute.BleSearch]:
+    | {
+        autoStart?: boolean;
+      }
+    | undefined;
 };
 
 export enum MainTabRoute {

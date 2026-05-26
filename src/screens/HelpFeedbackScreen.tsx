@@ -43,10 +43,25 @@ const HELP_ITEMS = [
   '如何设置安全区域？',
 ];
 
-const FEEDBACK_ITEMS: { label: string; iconBg: string; icon: keyof React.ComponentProps<typeof Feather>['name']; onPress?: () => void }[] = [
-  { label: '联系客服', iconBg: COLORS.iconGreen, icon: 'phone', onPress: () => Linking.openURL('mailto:support@example.com') },
-  { label: '意见反馈', iconBg: COLORS.iconOrange, icon: 'message-circle', onPress: undefined },
-  { label: '评价应用', iconBg: COLORS.iconBlue, icon: 'star', onPress: () => Linking.openURL('https://apps.apple.com') },
+const FEEDBACK_ITEMS: {
+  label: string;
+  iconBg: string;
+  icon: React.ComponentProps<typeof Feather>['name'];
+  onPress?: () => void;
+}[] = [
+  {
+    label: '联系客服',
+    iconBg: COLORS.iconGreen,
+    icon: 'phone',
+    onPress: () => Linking.openURL('mailto:support@example.com'),
+  },
+  { label: '意见反馈', iconBg: COLORS.iconOrange, icon: 'message-circle' },
+  {
+    label: '评价应用',
+    iconBg: COLORS.iconBlue,
+    icon: 'star',
+    onPress: () => Linking.openURL('https://apps.apple.com'),
+  },
 ];
 
 export function HelpFeedbackScreen() {

@@ -17,7 +17,9 @@
       "bundleIdentifier": "com.anonymous.pet-track",
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "PetTrack 需要使用蓝牙来搜索和连接您的宠物追踪设备",
-        "NSLocationWhenInUseUsageDescription": "蓝牙扫描需要定位权限以发现附近设备"
+        "NSLocationWhenInUseUsageDescription": "蓝牙扫描需要定位权限以发现附近设备",
+        "NSPhotoLibraryUsageDescription": "用于为宠物设备选择自定义头像照片。",
+        "NSCameraUsageDescription": "用于拍摄设备头像照片。"
       }
     },
     "android": {
@@ -45,7 +47,25 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "react-native-ble-plx"
+      "react-native-ble-plx",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "用于为宠物设备选择自定义头像照片。",
+          "cameraPermission": "用于拍摄设备头像照片。"
+        }
+      ],
+      "@react-native-community/datetimepicker",
+      [
+        "expo-gaode-map",
+        {
+          "androidKey": "YOUR_AMAP_ANDROID_KEY",
+          "iosKey": "ae8320792a70159737b7394eb6069b37",
+          "enableLocation": true,
+          "enableBackgroundLocation": false,
+          "locationDescription": "用于在地图上显示当前位置，以及宠物追踪相关地图服务。"
+        }
+      ]
     ]
   }
 }

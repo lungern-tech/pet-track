@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
+  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,8 +12,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { State } from 'react-native-ble-plx';
 import type { RootStackParamList } from '../navigation/types';
 import { RootStackRoute } from '../navigation/types';
+import { useSettingsStore } from '../store/settingsStore';
+import {
+  type BleDeviceInfo,
+  connectToDevice,
+  disconnectDevice,
+  observeBluetoothState,
+  requestPermissions,
+  startScan,
+  stopScan,
+} from '../services/BleService';
 
 const COLORS = {
   background: '#F5F4F1',
@@ -25,6 +38,133 @@ type DeviceMatchNav = NativeStackNavigationProp<RootStackParamList>;
 
 export function DeviceMatchScreen() {
   const navigation = useNavigation<DeviceMatchNav>();
+  const petDraft = useSettingsStore((s) => s.petOnboardingDraft);
+  const [btOn, setBtOn] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [devices, setDevices] = useState<BleDeviceInfo[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [connectingId, setConnectingId] = useState<string | null>(null);
+  const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = observeBluetoothState((state) => {
+      setBtOn(state === State.PoweredOn);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+      stopScan();
+    };
+  }, []);
+
+  const handleStop = useCallback(async () => {
+    if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+    scanTimerRef.current = null;
+    stopScan();
+    setScanning(false);
+    setDevices([]);
+    setError(null);
+    if (connectingId) {
+      try {
+        await disconnectDevice(connectingId);
+      } catch {
+        // ignore
+      } finally {
+        setConnectingId(null);
+      }
+    }
+  }, [connectingId]);
+
+  const handleStart = useCallback(async () => {
+    setError(null);
+    setDevices([]);
+
+    if (!btOn) {
+      setError('请先开启手机蓝牙');
+      return;
+    }
+
+    const granted = await requestPermissions();
+    if (!granted) {
+      setError('蓝牙权限被拒绝，请在系统设置中授权');
+      return;
+    }
+
+    setScanning(true);
+    startScan(
+      (device) => {
+        setDevices((prev) => {
+          if (prev.some((d) => d.id === device.id)) return prev;
+          return [...prev, device];
+        });
+      },
+      (err) => {
+        setError(err.message);
+        setScanning(false);
+      },
+    );
+
+    if (scanTimerRef.current) clearTimeout(scanTimerRef.current);
+    scanTimerRef.current = setTimeout(() => {
+      stopScan();
+      setScanning(false);
+      scanTimerRef.current = null;
+    }, 15000);
+  }, [btOn]);
+
+  const handleConnect = useCallback(
+    async (device: BleDeviceInfo) => {
+      stopScan();
+      setScanning(false);
+      setConnectingId(device.id);
+      setError(null);
+      try {
+        await connectToDevice(device.id);
+        setConnectingId(null);
+        navigation.navigate(RootStackRoute.DeviceMatchSuccess, {
+          deviceId: device.id,
+          petName: petDraft?.petName,
+        });
+      } catch (err: any) {
+        setConnectingId(null);
+        setError(`连接失败: ${err?.message ?? '未知错误'}`);
+      }
+    },
+    [navigation, petDraft?.petName],
+  );
+
+  const renderDevice = useCallback(
+    ({ item }: { item: BleDeviceInfo }) => {
+      const isConnecting = connectingId === item.id;
+      return (
+        <Pressable
+          style={({ pressed }) => [
+            styles.deviceRow,
+            pressed && styles.deviceRowPressed,
+          ]}
+          onPress={() => handleConnect(item)}
+          disabled={!!connectingId}
+        >
+          <View style={styles.deviceIconWrap}>
+            <Feather name="radio" size={20} color={COLORS.primary} />
+          </View>
+          <View style={styles.deviceInfo}>
+            <Text style={styles.deviceName}>{item.name}</Text>
+            <Text style={styles.deviceId}>{item.id}</Text>
+          </View>
+          {isConnecting ? (
+            <ActivityIndicator size="small" color={COLORS.primary} />
+          ) : (
+            <Text style={styles.rssiText}>{item.rssi}</Text>
+          )}
+        </Pressable>
+      );
+    },
+    [connectingId, handleConnect],
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -47,7 +187,7 @@ export function DeviceMatchScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.card}>
-            <Text style={styles.title}>正在搜索设备</Text>
+            <Text style={styles.title}>准备搜索设备</Text>
             <Text style={styles.subtitle}>请确保：</Text>
 
             <View style={styles.steps}>
@@ -56,34 +196,51 @@ export function DeviceMatchScreen() {
               <StepItem index={3} text="将设备靠近手机（距离小于 1 米）" />
             </View>
 
-            <View style={styles.statusBlock}>
-              <Text style={styles.statusText}>搜索中...</Text>
-              <View style={styles.progressTrack}>
-                <View style={styles.progressBar} />
-              </View>
-            </View>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-            <View style={styles.actionsRow}>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.secondaryButton,
-                  pressed && styles.secondaryButtonPressed,
-                ]}
-                onPress={() => navigation.goBack()}
+            <Pressable
+              style={({ pressed }) => [
+                scanning || connectingId
+                  ? styles.secondaryButtonFull
+                  : styles.primaryButtonFull,
+                pressed && styles.primaryButtonPressed,
+              ]}
+              onPress={scanning || connectingId ? handleStop : handleStart}
+              disabled={!!connectingId}
+            >
+              <Text
+                style={
+                  scanning || connectingId ? styles.secondaryText : styles.primaryText
+                }
               >
-                <Text style={styles.secondaryText}>取消</Text>
-              </Pressable>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  pressed && styles.primaryButtonPressed,
-                ]}
-                onPress={() => navigation.navigate(RootStackRoute.DeviceMatchSuccess)}
-              >
-                <Text style={styles.primaryText}>模拟成功</Text>
-              </Pressable>
-            </View>
+                {scanning || connectingId ? '取消' : '开始'}
+              </Text>
+            </Pressable>
           </View>
+
+          {scanning || devices.length > 0 ? (
+            <View style={styles.listCard}>
+              <View style={styles.listHeader}>
+                <Text style={styles.listTitle}>
+                  {scanning ? '正在搜索设备…' : `发现 ${devices.length} 个设备`}
+                </Text>
+                {scanning ? (
+                  <ActivityIndicator size="small" color={COLORS.primary} />
+                ) : null}
+              </View>
+              <FlatList
+                data={devices}
+                keyExtractor={(item) => item.id}
+                renderItem={renderDevice}
+                scrollEnabled={false}
+                contentContainerStyle={devices.length === 0 ? styles.emptyList : undefined}
+                ListEmptyComponent={
+                  <Text style={styles.emptyText}>请将项圈靠近手机，等待设备出现</Text>
+                }
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+              />
+            </View>
+          ) : null}
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -217,12 +374,26 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: COLORS.primary,
   },
-  actionsRow: {
-    flexDirection: 'row',
-    gap: 12,
+  errorText: {
+    marginBottom: 12,
+    fontSize: 13,
+    color: '#C2410C',
   },
-  secondaryButton: {
-    flex: 1,
+  primaryButtonFull: {
+    width: '100%',
+    height: 52,
+    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.primary,
+    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  secondaryButtonFull: {
+    width: '100%',
     height: 52,
     borderRadius: 12,
     backgroundColor: '#EDECEA',
@@ -237,19 +408,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.textSecondary,
   },
-  primaryButton: {
-    flex: 1,
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: COLORS.primary,
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 4,
-  },
   primaryButtonPressed: {
     opacity: 0.95,
   },
@@ -257,6 +415,77 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  listCard: {
+    marginTop: 16,
+    borderRadius: 16,
+    backgroundColor: COLORS.surface,
+    padding: 16,
+    shadowColor: '#1A1918',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  listHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  listTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  deviceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: '#FAFAF9',
+    gap: 12,
+  },
+  deviceRowPressed: {
+    opacity: 0.8,
+  },
+  deviceIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#E6F4EC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deviceInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  deviceName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  deviceId: {
+    fontSize: 11,
+    color: COLORS.textSecondary,
+  },
+  rssiText: {
+    width: 40,
+    textAlign: 'right',
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
+  separator: {
+    height: 8,
+  },
+  emptyList: {
+    paddingVertical: 8,
+  },
+  emptyText: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
   },
 });
 

@@ -80,14 +80,20 @@ export function startScan(
       return;
     }
 
-    if (!device || !device.name) return;
+    if (!device) return;
+    const displayName =
+      (device.name && device.name.trim()) ||
+      (typeof (device as any).localName === 'string'
+        ? String((device as any).localName).trim()
+        : '') ||
+      '未知设备';
 
     if (seen.has(device.id)) return;
     seen.add(device.id);
 
     onDeviceFound({
       id: device.id,
-      name: device.name,
+      name: displayName,
       rssi: device.rssi ?? -100,
       isConnectable: device.isConnectable ?? false,
     });

@@ -14,12 +14,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { State } from 'react-native-ble-plx';
 
 import type { RootStackParamList } from '../navigation/types';
 import { RootStackRoute } from '../navigation/types';
+import { useSettingsStore } from '../store/settingsStore';
 import {
   type BleDeviceInfo,
   connectToDevice,
@@ -30,6 +31,7 @@ import {
 } from '../services/BleService';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
+type Route = { key: string; name: RootStackRoute.BleSearch; params?: RootStackParamList[RootStackRoute.BleSearch] };
 
 const COLORS = {
   background: '#F5F4F1',
@@ -166,6 +168,7 @@ function PulseAnimation({ scanning }: { scanning: boolean }) {
 
 export function BleSearchScreen() {
   const navigation = useNavigation<Nav>();
+  const route = useRoute<Route>();
   const [devices, setDevices] = useState<BleDeviceInfo[]>([]);
   const [scanStatus, setScanStatus] = useState<ScanStatus>('idle');
   const [btState, setBtState] = useState<BtState>('unknown');
@@ -203,14 +206,17 @@ export function BleSearchScreen() {
   }, []);
 
   useEffect(() => {
-    if (btState === 'on') {
-      handleStartScan();
-    }
     return () => {
       stopScan();
     };
+  }, []);
+
+  useEffect(() => {
+    if (btState === 'on' && route.params?.autoStart) {
+      handleStartScan();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [btState]);
+  }, [btState, route.params?.autoStart]);
 
   const handleStartScan = useCallback(async () => {
     setError(null);
@@ -253,7 +259,11 @@ export function BleSearchScreen() {
       try {
         await connectToDevice(device.id);
         setConnectingId(null);
-        navigation.navigate(RootStackRoute.DeviceMatchSuccess);
+        const draft = useSettingsStore.getState().petOnboardingDraft;
+        navigation.navigate(RootStackRoute.DeviceMatchSuccess, {
+          deviceId: device.id,
+          petName: draft?.petName,
+        });
       } catch (err: any) {
         setConnectingId(null);
         setError(`连接失败: ${err.message ?? '未知错误'}`);

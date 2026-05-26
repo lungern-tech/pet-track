@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { RootStackRoute } from '../navigation/types';
 
 const COLORS = {
   background: '#F5F4F1',
@@ -18,7 +19,7 @@ const COLORS = {
 
 type NotificationScreenNav = NativeStackNavigationProp<
   RootStackParamList,
-  'Notifications'
+  RootStackRoute.Notifications
 >;
 
 type NotificationItem = {
